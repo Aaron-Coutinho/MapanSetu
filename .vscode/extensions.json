@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "gruntfuggly.todo-tree",
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-boot-dev-pack",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+    "yoavbls.pretty-ts-errors",
+    "ckolkman.vscode-postgres",
+    "rangav.vscode-thunder-client",
+    "42crunch.vscode-openapi",
+    "redhat.vscode-yaml",
+    "mikestead.dotenv"
+  ]
+}

@@ -1,0 +1,92 @@
+openapi: "3.0.3"
+info:
+  title: IAM Service API
+  description: Identity & Access Management — user onboarding, RBAC, eKYC
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new stakeholder
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Stakeholder registered
+        "400":
+          description: Validation error
+
+  /auth/login:
+    post:
+      summary: Authenticate and get JWT
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: JWT token returned
+        "401":
+          description: Invalid credentials
+
+  /users/{userId}:
+    get:
+      summary: Get user profile
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User profile
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [pan, gstin, email, role]
+      properties:
+        pan:
+          type: string
+          example: "ABCDE1234F"
+        gstin:
+          type: string
+          example: "27ABCDE1234F1Z5"
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [TRADER, LMO, GATC, ADMIN]
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

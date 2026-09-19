@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:/Users/bbraw/Desktop/SIH/36/MapanSetu/.vscode\" \\\\ *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\bbraw\\Desktop\\SIH\\36\\MapanSetu"
+    ]
+  }
+}

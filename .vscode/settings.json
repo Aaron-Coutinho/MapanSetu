@@ -1,0 +1,82 @@
+{
+  // --- Editor Baseline ---
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100],
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+
+  // --- Per-Language Formatter Overrides ---
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.tabSize": 4
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.tabSize": 4
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // --- File Associations ---
+  "files.associations": {
+    "*.env.*": "dotenv",
+    "*.yaml": "yaml",
+    "*.yml": "yaml"
+  },
+
+  // --- Exclude noise from explorer ---
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/target": true,
+    "**/.gradle": true,
+    "**/build": true,
+    "**/.next": true
+  },
+
+  // --- Search Exclusions ---
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/target": true,
+    "**/__pycache__": true,
+    "**/build": true
+  },
+
+  // --- Python ---
+  "python.defaultInterpreterPath": "python",
+  "python.analysis.typeCheckingMode": "basic",
+
+  // --- Java ---
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+
+  // --- Todo Tree ---
+  "todo-tree.general.tags": ["TODO", "FIXME", "STUB", "HACK", "NOTE", "PROTO"],
+  "todo-tree.highlights.customHighlight": {
+    "STUB": { "background": "#61afef", "iconColour": "#61afef" },
+    "PROTO": { "background": "#e5c07b", "iconColour": "#e5c07b" },
+    "NOTE": { "background": "#98c379", "iconColour": "#98c379" }
+  },
+
+  // --- GitLens ---
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.currentLine.enabled": true,
+
+  // --- Error Lens ---
+  "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
+
+  // --- OpenAPI ---
+  "openapi.defaultSchemaDialect": "openapi30"
+}

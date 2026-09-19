@@ -1,0 +1,59 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Workflow Engine (Node/TS)",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["--loader", "ts-node/esm"],
+      "args": ["src/index.ts"],
+      "cwd": "${workspaceFolder}/services/workflow",
+      "env": { "NODE_ENV": "development" },
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Fee Engine (Python/FastAPI)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "8001"],
+      "cwd": "${workspaceFolder}/services/fee-engine",
+      "env": { "PYTHONPATH": "${workspaceFolder}/services/fee-engine" }
+    },
+    {
+      "name": "Notifications (Python)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "8002"],
+      "cwd": "${workspaceFolder}/services/notifications",
+      "env": { "PYTHONPATH": "${workspaceFolder}/services/notifications" }
+    },
+    {
+      "name": "Certificate Service (Python)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "8003"],
+      "cwd": "${workspaceFolder}/services/certificate",
+      "env": { "PYTHONPATH": "${workspaceFolder}/services/certificate" }
+    },
+    {
+      "name": "Web App (React)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/apps/web/src"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All Python Services",
+      "configurations": [
+        "Fee Engine (Python/FastAPI)",
+        "Notifications (Python)",
+        "Certificate Service (Python)"
+      ]
+    }
+  ]
+}

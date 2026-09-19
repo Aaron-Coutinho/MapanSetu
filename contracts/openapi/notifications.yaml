@@ -1,0 +1,74 @@
+openapi: "3.0.3"
+info:
+  title: Notifications API
+  description: Async multi-channel alerts — SMS, WhatsApp, Email via Kafka/Redis
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8002/api/v1
+
+paths:
+  /notifications/send:
+    post:
+      summary: Send a notification to a stakeholder
+      tags: [Notifications]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationRequest"
+      responses:
+        "202":
+          description: Notification queued
+
+  /notifications/expiry-reminders:
+    post:
+      summary: Trigger expiry reminder batch for certificates expiring soon
+      tags: [Notifications]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpiryReminderRequest"
+      responses:
+        "202":
+          description: Reminders queued
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required: [recipientId, channel, templateId, variables]
+      properties:
+        recipientId:
+          type: string
+        channel:
+          type: string
+          enum: [SMS, WHATSAPP, EMAIL]
+        templateId:
+          type: string
+          example: "EXPIRY_REMINDER_60"
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+
+    ExpiryReminderRequest:
+      type: object
+      required: [daysUntilExpiry]
+      properties:
+        daysUntilExpiry:
+          type: integer
+          enum: [60, 30, 15]
+          description: Trigger reminders for certificates expiring in this many days
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

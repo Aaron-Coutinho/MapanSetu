@@ -1,0 +1,84 @@
+openapi: "3.0.3"
+info:
+  title: Workflow Engine API
+  description: Task allocation, scheduling, and anti-bias LMO routing
+  version: "0.1.0"
+servers:
+  - url: http://localhost:3001/api/v1
+
+paths:
+  /tasks/allocate:
+    post:
+      summary: Allocate a verification task to an LMO or GATC
+      tags: [Tasks]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AllocationRequest"
+      responses:
+        "200":
+          description: Task allocated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllocationResponse"
+
+  /tasks/{taskId}:
+    get:
+      summary: Get task status and details
+      tags: [Tasks]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Task details
+        "404":
+          description: Task not found
+
+components:
+  schemas:
+    AllocationRequest:
+      type: object
+      required: [applicationId, districtCode, instrumentClass]
+      properties:
+        applicationId:
+          type: string
+        districtCode:
+          type: string
+          example: "MH-PUNE"
+        instrumentClass:
+          type: string
+          enum: [CLASS_I, CLASS_II, CLASS_III, CLASS_IIII]
+        preferGatc:
+          type: boolean
+          default: false
+
+    AllocationResponse:
+      type: object
+      properties:
+        taskId:
+          type: string
+        assignedTo:
+          type: string
+          description: LMO or GATC officer ID
+        scheduledDate:
+          type: string
+          format: date
+        estimatedTime:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

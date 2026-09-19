@@ -1,0 +1,86 @@
+openapi: "3.0.3"
+info:
+  title: Certificate Service API
+  description: PDF/A generation, SHA-256 QR codes, HSM/eSign integration
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8003/api/v1
+
+paths:
+  /certificates/generate:
+    post:
+      summary: Generate and sign a verification certificate
+      tags: [Certificates]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CertificateRequest"
+      responses:
+        "201":
+          description: Certificate generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificateResponse"
+
+  /certificates/verify/{qrHash}:
+    get:
+      summary: Public QR code verification endpoint
+      tags: [Certificates]
+      parameters:
+        - name: qrHash
+          in: path
+          required: true
+          schema:
+            type: string
+            description: SHA-256 hash embedded in certificate QR code
+      responses:
+        "200":
+          description: Certificate is valid
+        "404":
+          description: Certificate not found or revoked
+
+components:
+  schemas:
+    CertificateRequest:
+      type: object
+      required: [taskId, iin, inspectorId, issuedDate, validUntil]
+      properties:
+        taskId:
+          type: string
+        iin:
+          type: string
+          pattern: "^[0-9]{16}$"
+        inspectorId:
+          type: string
+        issuedDate:
+          type: string
+          format: date
+        validUntil:
+          type: string
+          format: date
+
+    CertificateResponse:
+      type: object
+      properties:
+        certificateId:
+          type: string
+        pdfUrl:
+          type: string
+          description: MinIO/S3 URL of the signed PDF/A
+        qrHash:
+          type: string
+          description: SHA-256 hash for QR verification
+        signedAt:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

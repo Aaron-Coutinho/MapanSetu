@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+**/.venv/
+*.egg-info/
+dist/
+build/
+
+# Java / Maven / Gradle
+target/
+.gradle/
+*.class
+*.jar
+*.war
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+**/build/
+**/.next/
+**/out/
+
+# Logs
+*.log
+logs/
+
+# Infra secrets (never commit)
+infra/**/*.secret
+infra/**/*.key

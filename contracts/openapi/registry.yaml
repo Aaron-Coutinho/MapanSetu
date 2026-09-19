@@ -1,0 +1,83 @@
+openapi: "3.0.3"
+info:
+  title: Registry Service API
+  description: Instrument lifecycle registry — IIN generation and asset tracking
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8090/api/v1
+
+paths:
+  /instruments:
+    post:
+      summary: Register a new instrument and generate IIN
+      tags: [Instruments]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InstrumentRegistrationRequest"
+      responses:
+        "201":
+          description: Instrument registered with IIN
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InstrumentRegistrationResponse"
+
+  /instruments/{iin}:
+    get:
+      summary: Get instrument lifecycle record by IIN
+      tags: [Instruments]
+      parameters:
+        - name: iin
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9]{16}$"
+            example: "1234567890123456"
+      responses:
+        "200":
+          description: Instrument record
+        "404":
+          description: IIN not found
+
+components:
+  schemas:
+    InstrumentRegistrationRequest:
+      type: object
+      required: [manufacturerSerial, modelApprovalRef, accuracyClass, gpsLat, gpsLng, ownerGstin]
+      properties:
+        manufacturerSerial:
+          type: string
+        modelApprovalRef:
+          type: string
+        accuracyClass:
+          type: string
+          enum: [CLASS_I, CLASS_II, CLASS_III, CLASS_IIII]
+        gpsLat:
+          type: number
+        gpsLng:
+          type: number
+        ownerGstin:
+          type: string
+
+    InstrumentRegistrationResponse:
+      type: object
+      properties:
+        iin:
+          type: string
+          description: 16-digit Instrument Identification Number
+          example: "1234567890123456"
+        registeredAt:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

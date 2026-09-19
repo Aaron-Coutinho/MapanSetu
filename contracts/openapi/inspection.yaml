@@ -1,0 +1,96 @@
+openapi: "3.0.3"
+info:
+  title: Inspection Service API
+  description: Mobile field inspection — MPE checks, geotagged photos, offline sync
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8081/api/v1
+
+paths:
+  /inspections:
+    post:
+      summary: Submit a field inspection result
+      tags: [Inspections]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InspectionSubmission"
+      responses:
+        "201":
+          description: Inspection recorded
+        "422":
+          description: MPE validation failed
+
+  /inspections/{taskId}/sync:
+    post:
+      summary: Sync offline inspection data when connectivity restored
+      tags: [Inspections]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OfflineSyncPayload"
+      responses:
+        "200":
+          description: Sync successful
+
+components:
+  schemas:
+    InspectionSubmission:
+      type: object
+      required: [taskId, iin, readings, gpsLat, gpsLng, passed]
+      properties:
+        taskId:
+          type: string
+        iin:
+          type: string
+          pattern: "^[0-9]{16}$"
+        readings:
+          type: array
+          items:
+            type: number
+          description: Observed test readings in grams
+        gpsLat:
+          type: number
+        gpsLng:
+          type: number
+        passed:
+          type: boolean
+          description: Whether instrument passed MPE threshold
+        photoUrls:
+          type: array
+          items:
+            type: string
+        signatureUrl:
+          type: string
+
+    OfflineSyncPayload:
+      type: object
+      required: [inspections, syncedAt]
+      properties:
+        inspections:
+          type: array
+          items:
+            $ref: "#/components/schemas/InspectionSubmission"
+        syncedAt:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

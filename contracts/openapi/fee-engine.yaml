@@ -1,0 +1,74 @@
+openapi: "3.0.3"
+info:
+  title: Fee Engine API
+  description: Dynamic fee calculation — Tf = Fb + Fc + Pq (Schedule IX, Legal Metrology General Rules 2011)
+  version: "0.1.0"
+servers:
+  - url: http://localhost:8001/api/v1
+
+paths:
+  /fees/calculate:
+    post:
+      summary: Calculate total verification fee for an instrument
+      tags: [Fees]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeeCalculationRequest"
+      responses:
+        "200":
+          description: Calculated fee breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeeCalculationResponse"
+
+  /fees/schedule:
+    get:
+      summary: Get full Schedule IX fee table
+      tags: [Fees]
+      responses:
+        "200":
+          description: Fee schedule by instrument class and capacity
+
+components:
+  schemas:
+    FeeCalculationRequest:
+      type: object
+      required: [instrumentClass, capacityKg, districtCode, quartersLapsed]
+      properties:
+        instrumentClass:
+          type: string
+          enum: [CLASS_I, CLASS_II, CLASS_III, CLASS_IIII]
+        capacityKg:
+          type: number
+          example: 500
+        districtCode:
+          type: string
+          example: "MH-PUNE"
+        quartersLapsed:
+          type: integer
+          description: Nq — number of lapsed calendar quarters for late penalty
+          minimum: 0
+          example: 0
+
+    FeeCalculationResponse:
+      type: object
+      properties:
+        baseFee:
+          type: number
+          description: "Fb — base instrument fee from Schedule IX"
+        conveyanceFee:
+          type: number
+          description: "Fc — on-site conveyance charge"
+        penaltyFee:
+          type: number
+          description: "Pq = Nq * Fb — late payment penalty"
+        totalFee:
+          type: number
+          description: "Tf = Fb + Fc + Pq"
+        currency:
+          type: string
+          default: "INR"
